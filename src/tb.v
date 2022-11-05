@@ -12,7 +12,7 @@ module tb (
     input clk,
     input increase_duty_sync,
     input decrease_duty_sync,
-    output pwm_out,
+    output pwm_out
    );
 
     // this part dumps the trace to a vcd file that can be viewed with GTKWave
