@@ -3,21 +3,28 @@ from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
 
 
-segments = [ 63, 6, 91, 79, 102, 109, 124, 7, 127, 103 ]
 
 @cocotb.test()
-async def test_7seg(dut):
+async def pwm(dut):
     dut._log.info("start")
-    clock = Clock(dut.clk, 10, units="us")
+    clock = Clock(dut.i_clk, 10, units="ns")
     cocotb.fork(clock.start())
     
-    dut._log.info("reset")
-    dut.rst.value = 1
-    await ClockCycles(dut.clk, 10)
-    dut.rst.value = 0
+    await ClockCycles(dut.i_clk, 100)
+    dut.i_increase_duty.value = 0
+    dut.i_decrease_duty.value = 0
 
-    dut._log.info("check all segments")
-    for i in range(10):
-        dut._log.info("check segment {}".format(i))
-        await ClockCycles(dut.clk, 100)
-        assert int(dut.segments.value) == segments[i]
+    dut._log.info("check increase")
+    for i in range(4):
+        await ClockCycles(dut.i_clk, 100)
+        dut.i_increase_duty.value = 1
+        await ClockCycles(dut.i_clk, 100)
+        dut.i_increase_duty.value = 0
+
+    dut._log.info("check decrease")
+    for i in range(4): 
+        await ClockCycles(dut.i_clk, 100)
+        dut.i_decrease_duty.value = 0
+        await ClockCycles(dut.i_clk, 100)
+        dut.i_decrease_duty.value = 1
+
