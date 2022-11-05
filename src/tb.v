@@ -9,13 +9,13 @@ module tb;
  reg increase_duty;
  reg decrease_duty;
  // Outputs
- wire PWM_OUT;
+ wire pwm_out;
  // Instantiate the PWM Generator with variable duty cycle in Verilog
- pwm PWM_DUT(
-  .clk(clk), 
-  .increase_duty(increase_duty), 
-  .decrease_duty(decrease_duty), 
-  .PWM_OUT(PWM_OUT)
+ pwm DUT(
+  .i_clk(clk), 
+  .i_increase_duty(increase_duty), 
+  .i_decrease_duty(decrease_duty), 
+  .o_pwm(pwm_out)
  );
  // Create 100Mhz clock
  initial begin
