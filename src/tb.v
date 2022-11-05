@@ -1,34 +1,55 @@
-`default_nettype none
-`timescale 1ns/1ps
 
-/*
-this testbench just instantiates the module and makes some convenient wires
-that can be driven / tested by the cocotb test.py
-*/
 
-module tb (
-    // testbench is controlled by test.py
-    input clk,
-    input rst,
-    output [6:0] segments
-   );
-
-    // this part dumps the trace to a vcd file that can be viewed with GTKWave
-    initial begin
-        $dumpfile ("tb.vcd");
-        $dumpvars (0, tb);
-        #1;
-    end
-
-    // wire up the inputs and outputs
-    wire [7:0] inputs = {6'b0, rst, clk};
-    wire [7:0] outputs;
-    assign segments = outputs[6:0];
-
-    // instantiate the DUT
-    seven_segment_seconds #(.MAX_COUNT(100)) seven_segment_seconds(
-        .io_in  (inputs),
-        .io_out (outputs)
-        );
-
+`timescale 1ns / 1ps
+// fpga4student.com: FPGA Projects, Verilog projects, VHDL projects 
+// Verilog project: Verilog testbench code for PWM Generator with variable duty cycle 
+module tb;
+ // Inputs
+ reg clk;
+ reg increase_duty;
+ reg decrease_duty;
+ // Outputs
+ wire PWM_OUT;
+ // Instantiate the PWM Generator with variable duty cycle in Verilog
+ pwm PWM_DUT(
+  .clk(clk), 
+  .increase_duty(increase_duty), 
+  .decrease_duty(decrease_duty), 
+  .PWM_OUT(PWM_OUT)
+ );
+ // Create 100Mhz clock
+ initial begin
+ clk = 0;
+ forever #5 clk = ~clk;
+ end 
+ initial begin
+  increase_duty = 0;
+  decrease_duty = 0;
+  #100; 
+    increase_duty = 1; 
+  #100;// increase duty cycle by 10%
+    increase_duty = 0;
+  #100; 
+    increase_duty = 1;
+  #100;// increase duty cycle by 10%
+    increase_duty = 0;
+  #100; 
+    increase_duty = 1;
+  #100;// increase duty cycle by 10%
+    increase_duty = 0;
+  #100;
+    decrease_duty = 1; 
+  #100;//decrease duty cycle by 10%
+    decrease_duty = 0;
+  #100; 
+    decrease_duty = 1;
+  #100;//decrease duty cycle by 10%
+    decrease_duty = 0;
+  #100;
+    decrease_duty = 1;
+  #100;//decrease duty cycle by 10%
+    decrease_duty = 0;
+ end
 endmodule
+
+

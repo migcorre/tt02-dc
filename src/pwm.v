@@ -1,70 +1,81 @@
 `default_nettype none
 
-module pwm
- (
-    input [7:0] io_in,
+module pwm #(
+  parameter BOUNCING_CLK_WAIT = 20
+  ) (
+  input [7:0] io_in,
   output [7:0] io_out
-    );
- wire clk = io_in[5]; // clock input 
- wire increase_duty = io_in[6]; // input to increase 10% duty cycle
- wire decrease_duty = io_in[7]; // input to decrease 10% duty cycle
- wire PWM_OUT = io_out[1]; // 10MHz PWM output signal 
+  );
+  
+  wire i_clk = io_in[5]; // clock input 
+  wire i_increase_duty = io_in[6]; // input to increase 10% duty cycle
+  wire i_decrease_duty = io_in[7]; // input to decrease 10% duty cycle
+  wire o_pwm = io_out[1]; // 10MHz PWM output signal 
 
- wire slow_clk_enable; // slow clock enable signal for debouncing FFs
- reg[27:0] counter_debounce=0;// counter for creating slow clock enable signals 
- wire tmp1,tmp2,duty_inc;// temporary flip-flop signals for debouncing the increasing button
- wire tmp3,tmp4,duty_dec;// temporary flip-flop signals for debouncing the decreasing button
- reg[3:0] counter_PWM=0;// counter for creating 10Mhz PWM signal
- reg[3:0] DUTY_CYCLE=5; // initial duty cycle is 50%
-  // Debouncing 2 buttons for inc/dec duty cycle 
-  // Firstly generate slow clock enable for debouncing flip-flop (4Hz)
- always @(posedge clk)
- begin
-   counter_debounce <= counter_debounce + 1;
-   if(counter_debounce>=25000000)
-   // for running on FPGA -- comment when running simulation
-   //if(counter_debounce>=1) 
-   // for running simulation -- comment when running on FPGA
-    counter_debounce <= 0;
- end
-  assign slow_clk_enable = counter_debounce == 25000000 ?1:0;
- // for running on FPGA -- comment when running simulation 
- //assign slow_clk_enable = counter_debounce == 1 ?1:0;
- // for running simulation -- comment when running on FPGA
- // debouncing FFs for increasing button
- DFF_PWM PWM_DFF1(clk,slow_clk_enable,increase_duty,tmp1);
- DFF_PWM PWM_DFF2(clk,slow_clk_enable,tmp1, tmp2); 
- assign duty_inc =  tmp1 & (~ tmp2) & slow_clk_enable;
- // debouncing FFs for decreasing button
- DFF_PWM PWM_DFF3(clk,slow_clk_enable,decrease_duty, tmp3);
- DFF_PWM PWM_DFF4(clk,slow_clk_enable,tmp3, tmp4); 
- assign duty_dec =  tmp3 & (~ tmp4) & slow_clk_enable;
- // vary the duty cycle using the debounced buttons above
- always @(posedge clk)
- begin
-   if(duty_inc==1 && DUTY_CYCLE <= 9) 
-    DUTY_CYCLE <= DUTY_CYCLE + 1;// increase duty cycle by 10%
-   else if(duty_dec==1 && DUTY_CYCLE>=1) 
-    DUTY_CYCLE <= DUTY_CYCLE - 1;//decrease duty cycle by 10%
- end 
-// Create 10MHz PWM signal with variable duty cycle controlled by 2 buttons 
- always @(posedge clk)
- begin
-   counter_PWM <= counter_PWM + 1;
-   if(counter_PWM>=9) 
-    counter_PWM <= 0;
- end
- assign PWM_OUT = counter_PWM < DUTY_CYCLE ? 1:0;
+  reg[3:0] pwm_duty = 5; // initial duty cycle is 50%
+  reg[3:0] counter_duty = 0;// counter for creating 10Mhz PWM signal
+
+  synchronizer synchronizer_increase_duty(increase_duty_sync,i_increase_duty,i_clk)
+  synchronizer synchronizer_decrease_duty(decrease_duty_sync,i_decrease_duty,i_clk)
+  //latchinf latch_increase_duty(increase_duty_sync, increase_duty_latched)
+  //latchinf latch_decrease_duty(decrease_duty_sync, decrease_duty_latched)
+
+  reg[BOUNCING_CLK_WAIT-1:0] timer_enable = {(BOUNCING_CLK_WAIT){1'b1}};
+  always @(posedge i_clk)
+    if (timer_enable == 0)
+      begin
+        increase_duty_sync_last <= increase_duty_sync;
+        increase_duty_signal_detected <= (increase_duty_sync) && (!increase_duty_sync_last);
+	decrease_duty_sync_last <= decrease_duty_sync;
+	decrease_duty_signal_detected <= (decrease_duty_sync) && (!decrease_duty_sync_last);
+	timer_enable <= {(BOUNCING_CLK_WAIT){1'b1}};
+      end
+     else 
+       timer_enable <= timer_enable - 1'b1;
+
+  always @(posedge i_clk)
+    begin
+      if(increase_duty_signal_detected && pwm_duty <= 9)
+        pwm_duty <= pwm_duty + 1;// increase duty cycle by 10%
+      else if(decrease_duty_signal_detected && pwm_duty >=1) 
+        pwm_duty <= pwm_duty - 1;//decrease duty cycle by 10%
+    end 
+
+
+  always @(posedge i_clk)
+    begin
+      counter_duty <= counter_duty + 1;
+      if(counter_duty>=9)
+        counter_duty <= 0;
+    end
+
+ assign o_pwm = counter_duty < pwm_duty ? 1:0;
 endmodule
 
-// Debouncing DFFs for push buttons on FPGA
-module DFF_PWM(clk,en,D,Q);
-input clk,en,D;
-output reg Q;
-always @(posedge clk)
-begin 
- if(en==1) // slow clock enable signal 
-  Q <= D;
-end 
-endmodule 
 
+
+module synchronizer #(
+  parameter NUM_STAGES = 2
+) (
+  output    sync_out,
+  input     async_in,
+  input     clk
+);
+ 
+  reg   [NUM_STAGES:1]    sync_reg;
+ 
+  always @ (posedge clk) begin
+    sync_reg <= {sync_reg[NUM_STAGES-1:1], async_in};
+  end
+ 
+  assign sync_out = sync_reg[NUM_STAGES];
+ 
+endmodule
+
+module latchinf (data, q);
+   input  data;
+   output q;
+   reg    q;
+   always @ (data)
+       q <= data;
+endmodule
