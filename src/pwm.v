@@ -7,7 +7,7 @@ module pwm
     );
  wire clk = io_in[5]; // clock input 
  wire increase_duty = io_in[6]; // input to increase 10% duty cycle
- wire decrease_duty[7]; // input to decrease 10% duty cycle
+ wire decrease_duty = io_in[7]; // input to decrease 10% duty cycle
  wire PWM_OUT = io_out[1]; // 10MHz PWM output signal 
 
  wire slow_clk_enable; // slow clock enable signal for debouncing FFs
