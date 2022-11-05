@@ -23,7 +23,7 @@ module tb (
     end
 
     // wire up the inputs and outputs
-    wire [7:0] inputs = {decrease_duty_sync,increase_duty_sync,clk, 0, 0, 0, 0, 0};
+    wire [7:0] inputs = {decrease_duty_sync,increase_duty_sync,clk, 5'b0};
     wire [7:0] outputs;
     assign pwm_out = outputs[2];
     
