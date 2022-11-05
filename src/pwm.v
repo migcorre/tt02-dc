@@ -11,12 +11,19 @@ module pwm #(
   wire i_increase_duty = io_in[6]; // input to increase 10% duty cycle
   wire i_decrease_duty = io_in[7]; // input to decrease 10% duty cycle
   wire o_pwm = io_out[1]; // 10MHz PWM output signal 
+  wire increase_duty_sync;
+  wire decrease_duty_sync;
+  
 
   reg[3:0] pwm_duty = 5; // initial duty cycle is 50%
   reg[3:0] counter_duty = 0;// counter for creating 10Mhz PWM signal
+  reg increase_duty_sync_last;
+  reg increase_duty_signal_detected;
+  reg decrease_duty_sync_last;
+  reg decrease_duty_signal_detected;
 
-  synchronizer synchronizer_increase_duty(increase_duty_sync,i_increase_duty,i_clk)
-  synchronizer synchronizer_decrease_duty(decrease_duty_sync,i_decrease_duty,i_clk)
+  synchronizer synchronizer_increase_duty(increase_duty_sync,i_increase_duty,i_clk);
+  synchronizer synchronizer_decrease_duty(decrease_duty_sync,i_decrease_duty,i_clk);
   //latchinf latch_increase_duty(increase_duty_sync, increase_duty_latched)
   //latchinf latch_decrease_duty(decrease_duty_sync, decrease_duty_latched)
 
