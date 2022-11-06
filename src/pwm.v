@@ -1,7 +1,7 @@
 `default_nettype none
 
 module pwm #(
-  parameter BOUNCING_CLK_WAIT = 20
+  parameter BOUNCING_CLK_WAIT = 2
   ) (
   input [7:0] io_in,
   output [7:0] io_out
@@ -27,24 +27,24 @@ module pwm #(
   //latchinf latch_increase_duty(increase_duty_sync, increase_duty_latched)
   //latchinf latch_decrease_duty(decrease_duty_sync, decrease_duty_latched)
 
-  reg[BOUNCING_CLK_WAIT-1:0] timer_enable = {(BOUNCING_CLK_WAIT){1'b1}};
+  reg[BOUNCING_CLK_WAIT-1:0] timer_enable = {(BOUNCING_CLK_WAIT){1'b0}};
   always @(posedge i_clk)
-    if (timer_enable == 0)
+    if (timer_enable == {(BOUNCING_CLK_WAIT){1'b1}})
       begin
         increase_duty_sync_last <= increase_duty_sync;
         increase_duty_signal_detected <= (increase_duty_sync) && (!increase_duty_sync_last);
 	decrease_duty_sync_last <= decrease_duty_sync;
 	decrease_duty_signal_detected <= (decrease_duty_sync) && (!decrease_duty_sync_last);
-	timer_enable <= {(BOUNCING_CLK_WAIT){1'b1}};
+	timer_enable <= {(BOUNCING_CLK_WAIT){1'b0}};
       end
      else 
-       timer_enable <= timer_enable - 1'b1;
+       timer_enable <= timer_enable + 1'b1;
 
   always @(posedge i_clk)
     begin
-      if(increase_duty_signal_detected && pwm_duty <= 9)
+      if(increase_duty_signal_detected && pwm_duty <= 9 && (timer_enable==1))
         pwm_duty <= pwm_duty + 1;// increase duty cycle by 10%
-      else if(decrease_duty_signal_detected && pwm_duty >=1) 
+      else if(decrease_duty_signal_detected && pwm_duty >=1 && (timer_enable==1)) 
         pwm_duty <= pwm_duty - 1;//decrease duty cycle by 10%
     end 
 
