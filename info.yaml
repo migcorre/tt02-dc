@@ -13,28 +13,28 @@ project:
 #
 # This info will be automatically collected and used to make a datasheet for the chip.
 documentation: 
-  author:       "Miguel Correia"      # Your name
+  author:       "Marcelo Pouse / Miguel Correia"      # Your name
   discord:      "not"      # Your discord handle
-  title:        "duty controle"      # Project title
-  description:  "increase/decrease duty cycle"      # Short description of what your project does
-  how_it_works: "enter a square clock, and change the duty clcok"      # Longer description of how the project works
-  how_to_test:  ""      # Instructions on how someone could test your project, include things like what buttons do what and how to set the clock if needed
-  external_hw:  ""      # Describe any external hardware needed
+  title:        "duty controler"      # Project title
+  description:  "increase/decrease a duty cycle of square signal"      # Short description of what your project does
+  how_it_works: "Enter a square clock of 100Khz, and change Its duty cycle by pressing increase or decrease bottom. the change will be in steps of 10%. We have in mind the problem of bouncing bottom, and this was implemented for incremental and decremental bottom.  "      # Longer description of how the project works
+  how_to_test:  "You need connect a signal clock of 100Khz in the io_in[5] port, a incremental signal in io_in[6], and the decremental signal in io_in[7]. The output signal will be in the io_out[1] port. the signal output will have a frecuency of 10Khz (10 times lesser than input clock). when you press the incremental input bottom then the signal will increment by 10% Its duty cycle, and when you press the decremental input bottom you will see that the output signal decrement by 10%"      # Instructions on how someone could test your project, include things like what buttons do what and how to set the clock if needed
+  external_hw:  "You are gonna need a 100Khz clock signal generator, and 2 bottoms for incremental, decremental inputs. and a way of see the output signal, oscilloscope will be ideal "      # Describe any external hardware needed
   language:     "verilog" # other examples include Verilog, Amaranth, VHDL, etc
   doc_link:     ""      # URL to longer form documentation, eg the README.md in your repository
-  clock_hz:     100       # Clock frequency in Hz (if required)
+  clock_hz:     100000       # Clock frequency in Hz (if required)
   picture:      ""      # relative path to a picture in your repository
   inputs:               # a description of what the inputs do
-    - clock
-    - increase
-    - decrease
+    - clock: clock input of 100Khz. 
+    - increase: increase signal. this will increase the final duty cycle of the output signal by 10%
+    - decrease: decrease signal. this will decrease the final duty cycle of the output signal by 10%
     - none
     - none
     - none
     - none
     - none
   outputs:
-    - PWM         # a description of what the outputs do
+    - pwm: output signal of 10Khz. with Its duty change.         # a description of what the outputs do
     - none
     - none
     - none
