@@ -13,7 +13,7 @@ module pwm #(
   wire o_pwm = io_out[1]; // 10MHz PWM output signal 
   wire increase_duty_sync;
   wire decrease_duty_sync;
-  
+  wire duty_decrease,duty_increase; 
 
   reg[3:0] pwm_duty = 5; // initial duty cycle is 50%
   reg[3:0] counter_duty = 0;// counter for creating 10Mhz PWM signal
@@ -32,19 +32,23 @@ module pwm #(
     if (timer_enable == {(BOUNCING_CLK_WAIT){1'b1}})
       begin
         increase_duty_sync_last <= increase_duty_sync;
-        increase_duty_signal_detected <= (increase_duty_sync) && (!increase_duty_sync_last);
+        increase_duty_signal_detected <= increase_duty_sync_last;
 	decrease_duty_sync_last <= decrease_duty_sync;
-	decrease_duty_signal_detected <= (decrease_duty_sync) && (!decrease_duty_sync_last);
+	decrease_duty_signal_detected <= decrease_duty_sync_last;
 	timer_enable <= {(BOUNCING_CLK_WAIT){1'b0}};
       end
      else 
        timer_enable <= timer_enable + 1'b1;
 
+  assign duty_decrease = (!decrease_duty_signal_detected) && (decrease_duty_sync_last) && (timer_enable==1);
+  assign duty_increase = (!increase_duty_signal_detected) && (increase_duty_sync_last) && (timer_enable==1);
+
+
   always @(posedge i_clk)
     begin
-      if(increase_duty_signal_detected && pwm_duty <= 9 && (timer_enable==1))
+      if(duty_increase && pwm_duty <= 9)
         pwm_duty <= pwm_duty + 1;// increase duty cycle by 10%
-      else if(decrease_duty_signal_detected && pwm_duty >=1 && (timer_enable==1)) 
+      else if(duty_decrease && pwm_duty >=1) 
         pwm_duty <= pwm_duty - 1;//decrease duty cycle by 10%
     end 
 
