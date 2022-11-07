@@ -31,24 +31,24 @@ module pwm #(
   synchronizer synchronizer_increase_duty(increase_duty_sync,i_increase_duty,i_clk);
   synchronizer synchronizer_decrease_duty(decrease_duty_sync,i_decrease_duty,i_clk);
 
-  reg[BOUNCING_CLK_WAIT-1:0] timer_enable = {(BOUNCING_CLK_WAIT){1'b0}}; //bouncing time
+  reg[BOUNCING_CLK_WAIT-1:0] timer_counter = {(BOUNCING_CLK_WAIT){1'b0}}; //bouncing time
 
   //detect change from 0 to 1 in the inputs signals
   always @(posedge i_clk)
-    if (timer_enable == {(BOUNCING_CLK_WAIT){1'b1}})
+    if (timer_counter == {(BOUNCING_CLK_WAIT){1'b1}})
       begin
         increase_duty_sync_last <= increase_duty_sync;
         increase_duty_signal_detected <= increase_duty_sync_last;
         decrease_duty_sync_last <= decrease_duty_sync;
         decrease_duty_signal_detected <= decrease_duty_sync_last;
-        timer_enable <= {(BOUNCING_CLK_WAIT){1'b0}};
+        timer_counter <= {(BOUNCING_CLK_WAIT){1'b0}};
       end
      else 
-       timer_enable <= timer_enable + 1'b1;
+       timer_counter <= timer_counter + 1'b1;
 
   //trigger signals increase/descrease 
-  assign duty_decrease = (!decrease_duty_signal_detected) && (decrease_duty_sync_last) && (timer_enable=={(BOUNCING_CLK_WAIT){1'b1}});
-  assign duty_increase = (!increase_duty_signal_detected) && (increase_duty_sync_last) && (timer_enable=={(BOUNCING_CLK_WAIT){1'b1}});
+  assign duty_decrease = (!decrease_duty_signal_detected) && (decrease_duty_sync_last) && (timer_counter=={(BOUNCING_CLK_WAIT){1'b1}});
+  assign duty_increase = (!increase_duty_signal_detected) && (increase_duty_sync_last) && (timer_counter=={(BOUNCING_CLK_WAIT){1'b1}});
 
 
   //if trigger signal was issue then increase/decrease duty cycle 
