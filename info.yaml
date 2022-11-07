@@ -13,7 +13,7 @@ project:
 #
 # This info will be automatically collected and used to make a datasheet for the chip.
 documentation: 
-  author:       "Marcelo Pouse / Miguel Correia"      # Your name
+  author:       "Marcelo Pouso / Miguel Correia"      # Your name
   discord:      "not"      # Your discord handle
   title:        "duty controler"      # Project title
   description:  "increase/decrease a duty cycle of square signal"      # Short description of what your project does

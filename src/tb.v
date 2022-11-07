@@ -23,15 +23,16 @@ module tb (
     end
 
     // wire up the inputs and outputs
-    wire [7:0] inputs = {i_decrease_duty,i_increase_duty,i_clk, 5'b0};
+    wire [7:0] inputs = {5'b0, i_decrease_duty, i_increase_duty, i_clk};
     wire [7:0] outputs;
-    assign o_pwm = outputs[2];
+    assign o_pwm = outputs[0];
     
 
     // instantiate the DUT
-    pwm pwm_dut(
+    pwm #(2) pwm_dut (
         .io_in  (inputs),
         .io_out (outputs)
         );
+
 
 endmodule

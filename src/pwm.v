@@ -6,16 +6,16 @@
 `default_nettype none
 
 module pwm #(
-  parameter BOUNCING_CLK_WAIT = 2
+  parameter BOUNCING_CLK_WAIT = 12
   ) (
   input [7:0] io_in,
   output [7:0] io_out
   );
   
-  wire i_clk = io_in[5]; // clock input. 100khz 
-  wire i_increase_duty = io_in[6]; // increase duty cycle by 10%
-  wire i_decrease_duty = io_in[7]; // decrease duty cycle by 10%
-  wire o_pwm = io_out[1]; // 10kHz PWM output signal 
+  wire i_clk = io_in[0]; // clock input. 100khz 
+  wire i_increase_duty = io_in[1]; // increase duty cycle by 10%
+  wire i_decrease_duty = io_in[2]; // decrease duty cycle by 10%
+  wire o_pwm; // 10kHz PWM output signal 
   wire increase_duty_sync;
   wire decrease_duty_sync;
   wire duty_decrease,duty_increase; 
@@ -32,7 +32,7 @@ module pwm #(
   synchronizer synchronizer_decrease_duty(decrease_duty_sync,i_decrease_duty,i_clk);
 
   reg[BOUNCING_CLK_WAIT-1:0] timer_enable = {(BOUNCING_CLK_WAIT){1'b0}}; //bouncing time
-  
+
   //detect change from 0 to 1 in the inputs signals
   always @(posedge i_clk)
     if (timer_enable == {(BOUNCING_CLK_WAIT){1'b1}})
@@ -47,8 +47,8 @@ module pwm #(
        timer_enable <= timer_enable + 1'b1;
 
   //trigger signals increase/descrease 
-  assign duty_decrease = (!decrease_duty_signal_detected) && (decrease_duty_sync_last) && (timer_enable==1);
-  assign duty_increase = (!increase_duty_signal_detected) && (increase_duty_sync_last) && (timer_enable==1);
+  assign duty_decrease = (!decrease_duty_signal_detected) && (decrease_duty_sync_last) && (timer_enable=={(BOUNCING_CLK_WAIT){1'b1}});
+  assign duty_increase = (!increase_duty_signal_detected) && (increase_duty_sync_last) && (timer_enable=={(BOUNCING_CLK_WAIT){1'b1}});
 
 
   //if trigger signal was issue then increase/decrease duty cycle 
@@ -69,6 +69,8 @@ module pwm #(
     end
 
  assign o_pwm = counter_duty < pwm_duty ? 1:0; //final output signal
+ assign io_out[0] = o_pwm;
+
 endmodule
 
 
