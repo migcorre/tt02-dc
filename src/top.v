@@ -11,9 +11,10 @@ module top (
 );
 
   wire clk = io_in[0];  // clock input. 100khz 
-  wire increase_duty_in = io_in[1];  // increase duty cycle by 10%
-  wire decrease_duty_in = io_in[2];  // decrease duty cycle by 10%
-  wire disable_debouncer_in = io_in[3];
+  wire reset = io_in[1];  // reset active high
+  wire increase_duty_in = io_in[2];  // increase duty cycle by 10%
+  wire decrease_duty_in = io_in[3];  // decrease duty cycle by 10%
+  wire disable_debouncer_in = io_in[4];
   wire pwm_out;  // 10kHz PWM output signal 
 
   wire increase_duty_sync;
@@ -50,14 +51,20 @@ module top (
   );
 
   // Debuncers ------------------------/
-  debouncer increase_debuncer (
+  debouncer #(
+      .N(11)
+  ) increase_debuncer (
       .clk(clk),
+      .reset(reset),
       .signal_in(increase_duty_sync),
       .signal_out(increase_duty_deb)
   );
 
-  debouncer decrease_debuncer (
+  debouncer #(
+      .N(11)
+  ) decrease_debuncer (
       .clk(clk),
+      .reset(reset),
       .signal_in(decrease_duty_sync),
       .signal_out(decrease_duty_deb)
   );
@@ -69,10 +76,11 @@ module top (
   pwm #(
       .INITIAL_DUTY(5)
   ) pwm_dc (
-      .clk(clk),  // clock input ~ 100khz 
-      .increase_duty_in(increase_duty),  // increase duty cycle by 10%
-      .decrease_duty_in(decrease_duty),  // decrease duty cycle by 10%
-      .pwm_out(pwm_out)  // 10kHz PWM output signal 
+      .clk(clk), 
+      .reset(reset), 
+      .increase_duty_in(increase_duty),
+      .decrease_duty_in(decrease_duty),
+      .pwm_out(pwm_out) 
   );
 
   assign io_out[0] = pwm_out;
