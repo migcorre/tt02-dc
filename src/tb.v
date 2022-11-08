@@ -30,7 +30,7 @@ module tb (
   assign pwm_neg_out = outputs[1];
 
   // instantiate the DUT
-  top dut (
+  migcorre_pwm dut (
       .io_in (inputs),
       .io_out(outputs)
   );
