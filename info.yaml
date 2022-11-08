@@ -29,7 +29,7 @@ documentation:
     - reset: Reset active high
     - increase: Increase signal. this will increase the final duty cycle of the output signal by 10%
     - decrease: Decrease signal. this will decrease the final duty cycle of the output signal by 10%
-    - none
+    - disable_debouncer: Disable debouncer fot the increase / decrease inputs.
     - none
     - none
     - none
