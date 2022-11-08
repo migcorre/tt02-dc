@@ -5,7 +5,7 @@
 SIM ?= icarus
 TOPLEVEL_LANG ?= verilog
 
-VERILOG_SOURCES += $(PWD)/tb.v $(PWD)/top.v $(PWD)/pwm.v $(PWD)/synchronizer.v
+VERILOG_SOURCES += $(PWD)/tb.v $(PWD)/top.v $(PWD)/pwm.v $(PWD)/synchronizer.v $(PWD)/debouncer.v
 
 # TOPLEVEL is the name of the toplevel module in your Verilog or VHDL file
 TOPLEVEL = tb
