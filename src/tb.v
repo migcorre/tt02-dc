@@ -9,10 +9,11 @@ that can be driven / tested by the cocotb test.py
 module tb (
     // testbench is controlled by test.py
     input  clk,
+    input  reset,
     input  increase_duty_in,
     input  decrease_duty_in,
     output pwm_out,
-    output neg_pwm_out
+    output pwm_neg_out
 );
 
   // this part dumps the trace to a vcd file that can be viewed with GTKWave
@@ -23,10 +24,10 @@ module tb (
   end
 
   // wire up the inputs and outputs
-  wire [7:0] inputs = {5'b0, decrease_duty_in, increase_duty_in, clk};
+  wire [7:0] inputs = {5'b0, decrease_duty_in, increase_duty_in, reset, clk};
   wire [7:0] outputs;
   assign pwm_out = outputs[0];
-  assign neg_pwm_out = outputs[1];
+  assign pwm_neg_out = outputs[1];
 
   // instantiate the DUT
   top dut (
