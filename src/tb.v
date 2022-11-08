@@ -11,7 +11,8 @@ module tb (
     input  clk,
     input  increase_duty_in,
     input  decrease_duty_in,
-    output pwm_out
+    output pwm_out,
+    output neg_pwm_out
 );
 
   // this part dumps the trace to a vcd file that can be viewed with GTKWave
@@ -25,9 +26,10 @@ module tb (
   wire [7:0] inputs = {5'b0, decrease_duty_in, increase_duty_in, clk};
   wire [7:0] outputs;
   assign pwm_out = outputs[0];
+  assign neg_pwm_out = outputs[1];
 
   // instantiate the DUT
-  top dut2 (
+  top dut (
       .io_in (inputs),
       .io_out(outputs)
   );
