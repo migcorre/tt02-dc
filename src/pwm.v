@@ -8,7 +8,7 @@
 module pwm #(
     parameter INITIAL_DUTY = 5  // initial duty cycle in 50%
 ) (
-    input clk,  // clock input. 100khz 
+    input clk,  // clock input. 12KHz 
     input reset,  // reset active high 
     input increase_duty_in,  // increase duty cycle by 10%
     input decrease_duty_in,  // decrease duty cycle by 10%

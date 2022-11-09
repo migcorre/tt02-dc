@@ -6,7 +6,7 @@
 `default_nettype none
 
 module debouncer #(
-    parameter N = 11  // (2^11) / 100 KHz = 20.48 ms debounce time
+    parameter N = 8  // (2^8) / 12.5 KHz = 20.48 ms debounce time
 ) (
     input clk,
     input reset,

@@ -10,7 +10,7 @@ module migcorre_pwm (
     output [7:0] io_out
 );
 
-  wire clk = io_in[0];  // clock input. 100khz 
+  wire clk = io_in[0];  // clock input 12.5KHz 
   wire reset = io_in[1];  // reset active high
   wire increase_duty_in = io_in[2];  // increase duty cycle by 10%
   wire decrease_duty_in = io_in[3];  // decrease duty cycle by 10%
@@ -52,7 +52,7 @@ module migcorre_pwm (
 
   // Debuncers ------------------------/
   debouncer #(
-      .N(11)
+      .N(8)
   ) increase_debuncer (
       .clk(clk),
       .reset(reset),
@@ -61,7 +61,7 @@ module migcorre_pwm (
   );
 
   debouncer #(
-      .N(11)
+      .N(8)
   ) decrease_debuncer (
       .clk(clk),
       .reset(reset),
