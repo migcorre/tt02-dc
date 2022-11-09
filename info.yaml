@@ -30,15 +30,15 @@ documentation:
   inputs:               # a description of what the inputs do
     - clock: Clock input of 12.5Khz. 
     - reset: Reset active high.
-    - increase: Increase signal. this will increase the final duty cycle of the output signal by 10%
-    - decrease: Decrease signal. this will decrease the final duty cycle of the output signal by 10%
+    - increase: Increase signal. This will increase the final duty cycle of the output signal by 10%
+    - decrease: Decrease signal. This will decrease the final duty cycle of the output signal by 10%
     - disable_debouncer: Disable debouncer fot the increase / decrease inputs.
     - none
     - none
     - none
   outputs:
     - pwm: PWM output signal of 10Khz. with Its duty change.         # a description of what the outputs do
-    - pwm_neg: PWM negate output signal
+    - pwm_neg: PWM negate output signal.
     - none
     - none
     - none
