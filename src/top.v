@@ -85,6 +85,8 @@ module migcorre_pwm (
 
   assign io_out[0] = pwm_out;
   assign io_out[1] = ~pwm_out;
+  assign io_out[2] = increase_duty_sync;
+  assign io_out[3] = decrease_duty_sync;
 
 endmodule
 

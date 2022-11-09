@@ -21,26 +21,26 @@ documentation:
   title:        "Duty Controler"      # Project title
   description:  "Increase/Decrease a duty cycle of square signal"      # Short description of what your project does
   how_it_works: "Enter a square clock of 12.5Khz, and change Its duty cycle by pressing increase or decrease bottom. the change will be in steps of 10%. We have in mind the problem of bouncing bottom, and this was implemented for incremental and decremental bottom.  "      # Longer description of how the project works
-  how_to_test:  "You need connect a signal clock of 12.5Khz in the io_in[0] port, a reset active high in io_in[1], a incremental signal in io_in[2], and the decremental signal in io_in[3]. The output signal will be in the io_out[0] port and the negate output in io_out[1]. The signal output will have a frecuency of 10Khz. When you press the incremental input bottom then the signal will increment by 10% Its duty cycle, and when you press the decremental input bottom you will see that the output signal decrement by 10%"      # Instructions on how someone could test your project, include things like what buttons do what and how to set the clock if needed
-  external_hw:  "You are gonna need a 12.5Khz clock signal generator, and 2 bottoms for incremental, decremental inputs. And a way of see the output signal, oscilloscope will be ideal "      # Describe any external hardware needed
+  how_to_test:  "You need connect a signal clock of 12.5Khz in the io_in[0] port, a reset active high in io_in[1], a incremental signal in io_in[2], and the decremental signal in io_in[3]. The output signal will be in the io_out[0] port and the negate output in io_out[1]. The signal output will have a frecuency of 10Khz. When you press the incremental input bottom then the signal will increment by 10% Its duty cycle, and when you press the decremental input bottom you will see that the output signal decrement by 10%."      # Instructions on how someone could test your project, include things like what buttons do what and how to set the clock if needed
+  external_hw:  "You are gonna need a 12.5Khz clock signal generator, and 2 bottoms for incremental and decremental inputs. An oscilloscope to see the output PWM 1.2KHZ signal. "      # Describe any external hardware needed
   language:     "verilog" # other examples include Verilog, Amaranth, VHDL, etc
   doc_link:     ""      # URL to longer form documentation, eg the README.md in your repository
-  clock_hz:     125000       # Clock frequency in Hz (if required)
+  clock_hz:     12500       # Clock frequency in Hz (if required)
   picture:      ""      # relative path to a picture in your repository
   inputs:               # a description of what the inputs do
     - clock: Clock input of 12.5Khz. 
     - reset: Reset active high.
-    - increase: Increase signal. This will increase the final duty cycle of the output signal by 10%
-    - decrease: Decrease signal. This will decrease the final duty cycle of the output signal by 10%
-    - disable_debouncer: Disable debouncer fot the increase / decrease inputs.
+    - increase: This will increase the final duty cycle of the output signal by 10%.
+    - decrease: This will decrease the final duty cycle of the output signal by 10%.
+    - disable_debouncer: Disable debouncer for the increase / decrease inputs.
     - none
     - none
     - none
   outputs:
-    - pwm: PWM output signal of 10Khz. with Its duty change.         # a description of what the outputs do
+    - pwm: PWM output signal of input clk/10 = 1.2Khz.       # a description of what the outputs do
     - pwm_neg: PWM negate output signal.
-    - none
-    - none
+    - increase: Syncronized signal from increase input.
+    - decrease: Syncronized signal from decrease input.
     - none
     - none
     - none
