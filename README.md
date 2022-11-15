@@ -1,34 +1,20 @@
 ![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/test/badge.svg)
 
-# What is Tiny Tapeout?
+# DUTY CONTROLLER
 
-TinyTapeout is an educational project that aims to make it easier and cheaper than ever to get your digital designs manufactured on a real chip!
+* This design is a simple duty controller which is intended to control the duty of a input signal through increase and decrease inputs signals.
+* This Project was submited into the [Tiny Tapeout 2 Program.](https://github.com/TinyTapeout/tinytapeout-02?mc_cid=1725baa7ba&mc_eid=3667d64e8a)
+* we use openLane to go from synthesis to GDS.
 
-Go to https://tinytapeout.com for instructions!
+## Overview 
 
-## How to change the Wokwi project
+This design receives as input a square signal of 12kHz and spit a signal of 1.2kHz. The duty of the output signal is increased or descreased by step of 10% when their respective input signals are issued. \
+This design has in consideration the bouncing of the input switches. We created an input that enable/disable this consideration for the increase/decrease bottoms. \
+We created a test to allow to see the performace of the design in the corner case as when we continue trying to increase/decrease the signal in their limits, and the change of the signal when the input bottom signal are bouncing. \
 
-Edit the [info.yaml](info.yaml) and change the wokwi_id to match your project.
-
-## How to enable the GitHub actions to build the ASIC files
-
-Please see the instructions for:
-
-* [Enabling GitHub Actions](https://tinytapeout.com/faq/#when-i-commit-my-change-the-gds-action-isnt-running)
-* [Enabling GitHub Pages](https://tinytapeout.com/faq/#my-github-action-is-failing-on-the-pages-part)
-
-## How does it work?
-
-When you edit the info.yaml to choose a different ID, the [GitHub Action](.github/workflows/gds.yaml) will fetch the digital netlist of your design from Wokwi.
-
-After that, the action uses the open source ASIC tool called [OpenLane](https://www.zerotoasiccourse.com/terminology/openlane/) to build the files needed to fabricate an ASIC.
 
 ## Resources
 
-* [FAQ](https://tinytapeout.com/faq/)
-* [Digital design lessons](https://tinytapeout.com/digital_design/)
-* [Join the community](https://discord.gg/rPK2nSjxy8)
+* [TinyTapout](https://tinytapeout.com/)
+* [digikey - debouncing logic circuit](https://forum.digikey.com/t/debounce-logic-circuit-verilog/13196)
 
-## What next?
-
-* Share your GDS on Twitter, tag it [#tinytapeout](https://twitter.com/hashtag/tinytapeout?src=hashtag_click) and [link me](https://twitter.com/matthewvenn)!
